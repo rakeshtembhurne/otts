@@ -1,0 +1,72 @@
+<?php
+
+/**
+ * Application handling
+ *
+ * PHP version 5.3
+ *
+ * @category Controller
+ * @package  Controller
+ * @author   Rakesh Tembhurne <rakesh@sanisoft.com>
+ * @license  http://sanisoft.com Private
+ * @link     http://sanisoft.com
+ */
+
+App::uses('Controller', 'Controller');
+
+/**
+ * Application controller class
+ *
+ * @category Controller
+ * @package  Controller
+ * @author   Rakesh Tembhurne <rakesh@sanisoft.com>
+ * @license  http://sanisoft.com Private
+ * @link     http://sanisoft.com
+ */
+class AppController extends Controller
+{
+
+    /**
+     * This class variable is used to list component classes used by controllers.
+     *
+     * @var array
+     */
+    public $components = array(
+                          0      => 'Session',
+                          'Auth' => array(
+                                     'loginRedirect'  => array(
+                                                          'controller' => 'subjects',
+                                                          'action'     => 'index',
+                                                         ),
+                                     'logoutRedirect' => array(
+                                                          'controller' => 'tests',
+                                                          'action'     => 'take_test',
+                                                         ),
+                                    )
+                         );
+
+    /**
+     * This class variable is used to list helper used by all views.
+     *
+     * @var type
+     */
+    public $helpers = array(
+                       'Html',
+                       'Form',
+                       'Session',
+                       'Js',
+                      );
+
+
+    /**
+     * This callback method is used to allow access to anonymous users.
+     *
+     * @return void
+     */
+    function beforeFilter()
+    {
+        $this->Auth->allow('login', 'logout', 'take_test', 'view_score', 'question');
+    }//end beforeFilter()
+
+
+}//end class

@@ -1,0 +1,34 @@
+<?php
+
+/**
+ * Model to handle test questions management
+ *
+ * PHP version 5.3
+ *
+ * @category Model
+ * @package  Model
+ * @author   Rakesh Tembhurne <rakesh@sanisoft.com>
+ * @license  http://nagpurbirds.org Private
+ * @link     http://nagpurbirds.org
+ */
+
+/**
+ * Test Question Model class
+ *
+ * @category Model
+ * @package  Model
+ * @author   Rakesh Tembhurne <rakesh@sanisoft.com>
+ * @license  http://nagpurbirds.org Private
+ * @link     http://nagpurbirds.org
+ */
+class TestQuestion extends AppModel
+{
+
+    /**
+     * This class variable is used to list Model's belongsTo associations.
+     *
+     * @var array
+     */
+    public $belongsTo = array('Test');
+
+}//end class

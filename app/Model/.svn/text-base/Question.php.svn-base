@@ -1,0 +1,52 @@
+<?php
+
+/**
+ * Model to handle questions management
+ *
+ * PHP version 5.3
+ *
+ * @category Model
+ * @package  Model
+ * @author   Rakesh Tembhurne <rakesh@sanisoft.com>
+ * @license  http://sanisoft.com Private
+ * @link     http://sanisoft.com
+ */
+
+/**
+ * Question Model class
+ *
+ * @category Model
+ * @package  Model
+ * @author   Rakesh Tembhurne <rakesh@sanisoft.com>
+ * @license  http://sanisoft.com Private
+ * @link     http://sanisoft.com
+ */
+class Question extends AppModel
+{
+
+    /**
+     * This variable contains list of validation rules.
+     *
+     * @var array
+     */
+    public $validate = array(
+                        'subject_id' => array('rule' => array('notempty')),
+                        'title'      => array('rule' => array('notempty')),
+                        'option_1'   => array('rule' => array('notempty')),
+                        'option_2'   => array('rule' => array('notempty')),
+                        'option_3'   => array('rule' => array('notempty')),
+                        'option_4'   => array('rule' => array('notempty')),
+                        'answer'     => array(
+                                         'rule'    => array('notempty'),
+                                         'message' => 'An option must be selected.',
+                                        ),
+                       );
+
+    /**
+     * This variable contains list of this models's belongsTo associations.
+     *
+     * @var array
+     */
+    public $belongsTo = array('Subject');
+
+}//end class

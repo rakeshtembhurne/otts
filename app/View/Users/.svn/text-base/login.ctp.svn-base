@@ -1,0 +1,23 @@
+<div>
+<?php echo $this->Session->flash('auth'); ?>
+</div>
+<div class="">
+	<fieldset><legend>Login</legend>
+	<?php echo $this->Form->create('User', array(
+    'inputDefaults' => array(
+        'div' => array('class' => 'clearfix'),
+        'class' => 'input'
+    )));?>
+	<fieldset>
+	   
+	<?php
+	    echo $this->Form->input('username');
+	    echo $this->Form->input('password');
+	?>
+	<?php echo $this->Form->end(array(
+		'div' => array('class' => 'actions'),
+		'label' => __('Login'),
+		'class' => 'btn primary'
+	));?>
+	</fieldset>	
+</div>
