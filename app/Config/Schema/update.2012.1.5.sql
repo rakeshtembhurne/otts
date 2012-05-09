@@ -1,1 +1,0 @@
-ALTER TABLE  `practice` ADD  `subject_id` INT UNSIGNED NULL
