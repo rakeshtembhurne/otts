@@ -22,6 +22,29 @@ class UsersController extends AppController
     }//end login()
 
 
+/*function login() {
+    $userId = $this->Auth->user('id');
+    if(!empty($userId)) {
+      $this->getRedirectPath();
+      $this->redirect($this->Auth->redirect());
+    }
+    if ($this->request->is('post')) {
+      if ($this->Auth->login()) {         
+        $groupInfo = $this->getParentGroup((int)$this->Auth->user('id'));        
+        if (!empty($groupInfo['parent_group'])) {
+          $this->Session->write('Auth.User.userGroup', $groupInfo['parent_group']);
+        } 
+        //this function returns redirect path by user's role
+        $this->getRedirectPath();
+        $this->redirect($this->Auth->redirect());
+      } else {
+        $this->setFlash('Your username or password was incorrect.', 'error');
+      }
+    }
+    $this->layout = 'login';
+  }*/
+
+
     /**
      * This action method is used to log user out.
      *
@@ -94,6 +117,32 @@ class UsersController extends AppController
             $this->request->data = $this->User->read(null, $id);
         }
     }//end edit()
+    
+    
+      public function signup() { 
+       
+    if($this->request->is('post')) {      
+      if($this->User->save($this->request->data)) {
+        debug($this->request->data);
+        if ($this->Auth->login()) {         
+          $groupInfo = $this->getParentGroup((int)$this->Auth->user('id'));        
+          if (!empty($groupInfo['parent_group'])) {
+            $this->Session->write('Auth.User.userGroup', $groupInfo['parent_group']);
+          } 
+          //this function returns redirect path by user's role
+          $this->getRedirectPath();
+          $this->redirect($this->Auth->redirect());
+        }
+      }
+    }    
+    $userId = $this->Auth->user('id');
+    if(!empty($userId)) {
+      $this->getRedirectPath();
+      $this->redirect($this->Auth->redirect());
+    }
+    $this->layout = 'login';
+
+  }//end signup()
 
 
 }//end class

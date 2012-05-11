@@ -11,6 +11,8 @@ SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
 
 
+
+
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
@@ -19,6 +21,57 @@ SET time_zone = "+00:00";
 --
 -- Database: `onlinetestsystem`
 --
+
+
+CREATE TABLE IF NOT EXISTS `acos` (
+  `id` int(10) NOT NULL AUTO_INCREMENT,
+  `parent_id` int(10) DEFAULT NULL,
+  `model` varchar(255) DEFAULT NULL,
+  `foreign_key` int(10) DEFAULT NULL,
+  `alias` varchar(255) DEFAULT NULL,
+  `lft` int(10) DEFAULT NULL,
+  `rght` int(10) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+);
+
+
+
+CREATE TABLE IF NOT EXISTS `aros` (
+  `id` int(10) NOT NULL AUTO_INCREMENT,
+  `parent_id` int(10) DEFAULT NULL,
+  `model` varchar(255) DEFAULT NULL,
+  `foreign_key` int(10) DEFAULT NULL,
+  `alias` varchar(255) DEFAULT NULL,
+  `lft` int(10) DEFAULT NULL,
+  `rght` int(10) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+);
+
+--
+-- Dumping data for table `aros`
+--
+
+INSERT INTO `aros` (`id`, `parent_id`, `model`, `foreign_key`, `alias`, `lft`, `rght`) VALUES
+(1, NULL, NULL, NULL, 'Admin', 1, 4),
+(2, NULL, NULL, NULL, 'Anonymous', 5, 14),
+(3, 2, NULL, NULL, 'Student', 6, 7),
+(4, 2, NULL, NULL, 'Teacher', 8, 9),
+(5, 2, NULL, NULL, 'Employee', 10, 13),
+(6, 1, NULL, 1, 'User::1', 2, 3);
+
+
+
+CREATE TABLE IF NOT EXISTS `aros_acos` (
+  `id` int(10) NOT NULL AUTO_INCREMENT,
+  `aro_id` int(10) NOT NULL,
+  `aco_id` int(10) NOT NULL,
+  `_create` varchar(2) NOT NULL DEFAULT '0',
+  `_read` varchar(2) NOT NULL DEFAULT '0',
+  `_update` varchar(2) NOT NULL DEFAULT '0',
+  `_delete` varchar(2) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `ARO_ACO_KEY` (`aro_id`,`aco_id`)
+);
 
 -- --------------------------------------------------------
 
