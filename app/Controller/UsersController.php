@@ -107,7 +107,7 @@ class UsersController extends AppController
     public function signup() { 
          
       if($this->request->is('post')) {  
-        /*$options = array(
+        $options = array(
           'to'          => 'jitendra.thakur2008@gmail.com',
           'from'        => 'no-reply@otts.com',
           'replyTo'     => null,
@@ -120,7 +120,7 @@ class UsersController extends AppController
           'viewVars'    => null,
         );
 
-       //$this->_sendEmail($options);*/
+       $this->_sendEmail($options);
 
         $this->request->data['User']['group_id'] = Configure::read('studentGroupId');
         if($this->User->save($this->request->data)) {
