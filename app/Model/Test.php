@@ -36,7 +36,6 @@ class Test extends AppModel
      * @var array
      */
     public $belongsTo = array(
-                         'Candidate',
                          'Subject',
                         );
 
@@ -75,24 +74,20 @@ class Test extends AppModel
      */
     public function modifyTestData($formData, $questions)
     {
+        $data = array();
         // For each question adjusts data for saving.
-        foreach ($questions as $que) {
+        foreach ($questions as $questionId => $que) {
             $formData['TestQuestion'][] = array(
-                                           'title'    => $que['Question']['title'],
-                                           'option_1' => $que['Question']['option_1'],
-                                           'option_2' => $que['Question']['option_2'],
-                                           'option_3' => $que['Question']['option_3'],
-                                           'option_4' => $que['Question']['option_4'],
-                                           'answer'   => $que['Question']['answer'],
-                                           'subject'  => $que['Subject']['name'],
-                                          );
+                                       'question_id' => $questionId,
+                                       'subject_id'  => $formData['Test']['subject_id'],
+                                      );
         }
 
         // Adds unique code to data.
         $formData['Test']['code'] = $this->__randomAlphaNum(4);
         return $formData;
     }//end modifyTestData()
-
+    
 
     /**
      * This method is used to get total score and total questions count of the test.

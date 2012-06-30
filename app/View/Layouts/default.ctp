@@ -9,7 +9,7 @@
     <?php echo $this->Html->meta('icon'); ?>
 
     <!-- Le styles -->
-    <?php echo $this->Html->css(array('bootstrap', 'custom')); ?>
+    <?php echo $this->Html->css(array('bootstrap', 'bootstrap.responsive', 'custom')); ?>
     <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
       <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
@@ -22,6 +22,7 @@
     <link rel="apple-touch-icon-precomposed" sizes="114x114" href="../assets/ico/apple-touch-icon-114-precomposed.png">
     <link rel="apple-touch-icon-precomposed" sizes="72x72" href="../assets/ico/apple-touch-icon-72-precomposed.png">
     <link rel="apple-touch-icon-precomposed" href="../assets/ico/apple-touch-icon-57-precomposed.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
   </head>
 
   <body>

@@ -10,4 +10,6 @@ class TestQuestion extends AppModel
      */
     public $belongsTo = array('Test');
 
+    public $hasAndBelongsToMany = array('Question');
+
 }//end class

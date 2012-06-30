@@ -3,7 +3,7 @@
         <div class="container">
             <?php
                 echo $this->Html->link(__('OTTS'), Router::url('/', true), array('class' => 'brand'));
-                $anonymousMenu = array(
+                $adminMenu = array(
                     array(
                         'title'    => 'Boards',
                         'dropdown' => array(
@@ -42,20 +42,7 @@
                                 'url'     => array('controller' => 'subjects', 'action' => 'add', 'admin' => true),
                             ),
                         ),
-                    ),
-                    array(
-                        'title'    => 'Candidate',
-                        'dropdown' => array(
-                            array(
-                                'title'   => 'List',
-                                'url'     => array('controller' => 'candidates', 'action' => 'index', 'admin' => true),
-                            ),
-                            array(
-                                'title'   => 'Add',
-                                'url'     => array('controller' => 'candidates', 'action' => 'add', 'admin' => true),
-                            ),
-                        ),
-                    ),
+                    ),                    
                     array(
                         'title'    => 'Question',
                         'dropdown' => array(
@@ -70,6 +57,19 @@
                         ),
                     ),
                     array(
+                        'title'    => 'Tutorial',
+                        'dropdown' => array(
+                            array(
+                                'title'   => 'List',
+                                'url'     => array('controller' => 'tutorials', 'action' => 'index', 'admin' => true),
+                            ),
+                            array(
+                                'title'   => 'Add',
+                                'url'     => array('controller' => 'tutorials', 'action' => 'add', 'admin' => true),
+                            ),
+                        ),
+                    ),
+                    array(
                         'title'    => 'Tests',
                         'dropdown' => array(
                             array(
@@ -80,13 +80,34 @@
                                 'title'   => 'Add',
                                 'url'     => array('controller' => 'tests', 'action' => 'add', 'admin' => true),
                             ),
+                            array(
+                                'title'   => 'Take Test',
+                                'url'     => array('controller' => 'tests', 'action' => 'take_test', 'admin' => false),
+                            ),
+                        ),
+                    ),
+                    array(
+                        'title'    => 'User',
+                        'dropdown' => array(
+                            array(
+                                'title'   => 'Admin',
+                                'url'     => array('controller' => 'users', 'action' => 'index', 'admin' => true),
+                            ),
+                            array(
+                                'title'   => 'Employee',
+                                'url'     => array('controller' => 'users', 'action' => 'employee', 'admin' => true),
+                            ),
+                            array(
+                                'title'   => 'Student',
+                                'url'     => array('controller' => 'users', 'action' => 'student', 'admin' => true),
+                            ),
                         ),
                     ),
                 );
-            $adminMenu = array(
+            $studentMenu = array(
                 array(
                     'title'   => 'Home',
-                    'url'     => Router::url('/', true),
+                    'url'     => array('controller' => 'users', 'action' =>'home', 'student' => true),
                 ),
             );
             $logInMenu = array(
@@ -95,11 +116,23 @@
                     'url'     => array('controller' => 'users', 'action' =>'login', 'admin' => false),
                 ),
             );
+            $username = $this->Session->read("Auth.User.firstname"). ' '.$this->Session->read("Auth.User.lastname"); 
+            
+            $uiName = ($username != ' ') ? $username : 'User';            
             $logOutMenu = array(
                 array(
-                    'title' => 'Settings',
-                    'url'   => array('controller' => 'users', 'action' =>'settings', 'admin' => true),
-                ),
+                        'title'    => $uiName,
+                        'dropdown' => array(
+                            array(
+                                'title'   => 'My Account',
+                                'url'     => array('controller' => 'users', 'action' => 'account', 'admin' => false, 'student' => false),
+                            ),
+                            array(
+                                'title'   => 'Profile',
+                                'url'     => array('controller' => 'users', 'action' => 'profile', 'admin' => false, 'student' => false),
+                            ),                            
+                        ),
+                    ),
                 array(
                     'title' => 'Log Out',
                     'url'   => array('controller' => 'users', 'action' =>'logout', 'admin' => false),
@@ -107,11 +140,11 @@
             );
 
             ?>
-            <?php if($this->Session->read('Auth.User.role') === 'admin'): ?>
+            <?php if($this->Session->read('Auth.User.userGroup') === 'Student') { ?>
+                <?php echo $this->element('bootstrap_menu', array('menu' => $studentMenu, 'secondary' => false)); ?>
+            <?php } elseif($this->Session->read('Auth.User.userGroup') === 'Admin') { ?>
                 <?php echo $this->element('bootstrap_menu', array('menu' => $adminMenu, 'secondary' => false)); ?>
-            <?php else: ?>
-                <?php echo $this->element('bootstrap_menu', array('menu' => $anonymousMenu, 'secondary' => false)); ?>
-            <?php endif; ?>
+            <?php } ?>
 
             <?php if($this->Session->read('Auth.User.id')): ?>
                 <?php echo $this->element('bootstrap_menu', array('menu' => $logOutMenu, 'secondary' => true)); ?>

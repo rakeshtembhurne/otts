@@ -23,12 +23,3 @@
 		</dd>
 	</dl>
 </div>
-<div class="actions">
-	<h3><?php echo __('Actions'); ?></h3>
-	<ul>
-		<li><?php echo $this->Html->link(__('Edit Board'), array('action' => 'edit', $board['Board']['id'])); ?> </li>
-		<li><?php echo $this->Form->postLink(__('Delete Board'), array('action' => 'delete', $board['Board']['id']), null, __('Are you sure you want to delete # %s?', $board['Board']['id'])); ?> </li>
-		<li><?php echo $this->Html->link(__('List Boards'), array('action' => 'index')); ?> </li>
-		<li><?php echo $this->Html->link(__('New Board'), array('action' => 'add')); ?> </li>
-	</ul>
-</div>

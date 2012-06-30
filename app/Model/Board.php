@@ -7,4 +7,7 @@ class Board extends AppModel {
  * @var array
  */
 	public $validate = array('name' => array('rule' => array('notempty')));
+
+
+		public $hasMany = array('Course');
 }

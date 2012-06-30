@@ -16,7 +16,7 @@
 		<td><?php echo h($board['Board']['created']); ?>&nbsp;</td>
 		<td><?php echo h($board['Board']['modified']); ?>&nbsp;</td>
 		<td class="actions">
-			<?php echo $this->Html->link(__('View'), array('action' => 'view', $board['Board']['id'])); ?>
+			<?php echo $this->Html->link(__('View'), array('action' => 'view', $board['Board']['id']), array('class' => 'btn btn-primary btn-mini')); ?>
 			<?php echo $this->Html->link(__('Edit'), array('action' => 'edit', $board['Board']['id'])); ?>
 			<?php echo $this->Form->postLink(__('Delete'), array('action' => 'delete', $board['Board']['id']), null, __('Are you sure you want to delete # %s?', $board['Board']['id'])); ?>
 		</td>

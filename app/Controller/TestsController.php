@@ -13,6 +13,7 @@ class TestsController extends AppController
                     'Test',
                     'Question',
                     'Subject',
+                    'Result'
                    );
 
 
@@ -21,23 +22,10 @@ class TestsController extends AppController
      *
      * @return void
      */
-    public function index()
+    public function admin_index()
     {
-        $this->paginate = array(
-                           'contain' => array(
-                                         'Candidate.name',
-                                         'Candidate.id',
-                                        ),
-                           'order'   => array('Test.id' => 'desc'),
-                          );
-        $tests          = $this->paginate();
-
-        // Adds score in each test.
-        foreach ($tests as &$test) {
-            $test['Test']['score'] = $this->Test->getTestScore($test['Test']['id']);
-        }
-        unset($test);
-
+        $this->Test->recursive = 0;
+        $tests = $this->paginate();
         $this->set(compact('tests'));
     }//end index()
 
@@ -58,22 +46,41 @@ class TestsController extends AppController
             throw new NotFoundException(__('Invalid test'));
         }
 
-        // Get
-        $test = $this->Test->find(
-            'first',
-            array(
-             'conditions' => array('Test.id' => $id),
-             'contain'    => array(
-                              'Candidate.id',
-                              'Candidate.name',
-                              'TestQuestion',
-                             ),
-            )
-        );
-
-        $score = $this->Test->getTestScore($id);
-
-        $this->set(compact('test', 'score'));
+        if ($this->request->is('post')) {
+            if (!empty($this->request->data['btnNext'])
+                && $this->Session->read('Test.current_question') <
+                        $this->Session->read('Test.question_count') - 1) {                
+                $this->Session->write(
+                    'Test.current_question', 
+                    $this->Session->read('Test.current_question') + 1
+                );
+            }
+            if (!empty($this->request->data['btnPrev'])
+                && $this->Session->read('Test.current_question') > 0) {
+                $this->Session->write(
+                    'Test.current_question', 
+                    $this->Session->read('Test.current_question') - 1
+                );
+            }
+        } else {
+            $test = $this->Test->find(
+                'first',
+                array(
+                 'conditions' => array('Test.id' => $id),
+                )
+            );
+            $test['question_count']   = count($test['TestQuestion']);
+            $test['current_question'] = 0;
+            $this->Session->write('Test', $test);
+        }
+        
+        $test            = $this->Session->read('Test');
+        $currentQuestion = $test['TestQuestion'][$test['current_question']]['question_id'];
+        unset($test['TestQuestion']);
+        $question = $this->Question->read(null, $currentQuestion);
+        //debug($question);
+        //debug($test);
+        $this->set(compact('test', 'question'));
     }//end view()
 
 
@@ -82,24 +89,28 @@ class TestsController extends AppController
      *
      * @return void
      */
-    public function add()
+    public function admin_add()
     {
         // If the form was submitted, proceeds to save the form.
         if ($this->request->is('post')) {
 
             // Gets random questions
             $questions = $this->Question->find(
-                'all',
+                'list',
                 array(
-                 'contain'    => array('Subject'),
+                 //'contain'    => array('Subject'),
                  'conditions' => array('Question.subject_id' => $this->request->data['Test']['subject_id']),
                  'order'      => 'RAND()',
-                 'limit'      => 25,
+                 'limit'      => $this->request->data['Test']['number_of_questions'],
                 )
             );
+            //unset($this->request->data['Test']['number_of_questions']);
 
             // Modifies data to be saved as associated models.
+            //debug($this->request->data);exit;
             $modifiedRequestData = $this->Test->modifyTestData($this->request->data, $questions);
+            //debug($modifiedRequestData);
+            //debug($questions);exit;
 
             // Saves associated data.
             $this->Test->create();
@@ -115,7 +126,7 @@ class TestsController extends AppController
             }
         }
 
-        $candidates = $this->Test->Candidate->find('list');
+        //$candidates = $this->Test->Candidate->find('list');
         $subjects   = $this->Subject->find('list');
 
         $this->set(compact('candidates', 'subjects'));
@@ -129,7 +140,7 @@ class TestsController extends AppController
      *
      * @return void
      */
-    public function delete($id = null)
+    public function admin_delete($id = null)
     {
         // If this action method was not called with POST method, throws exception.
         if (!$this->request->is('post')) {
@@ -280,6 +291,7 @@ class TestsController extends AppController
             } else {
                 $testId = $this->__validateTestWithCode();
             }
+            
 
             // if test id do not exists throw error message.
             if (!$testId) {
@@ -407,21 +419,13 @@ class TestsController extends AppController
                 'first',
                 array(
                  'recursive'  => -1,
-                 'fields'     => array(
-                                  'Test.id',
-                                  'Test.started',
-                                 ),
+                 'fields'     => array('Test.id'),
                  'conditions' => array('Test.code' => $this->request->data['Test']['code']),
                 )
             );
 
             // If no test found for the given code or test is already submitted, sets error message
-            if ($test) {
-                $testId = $test['Test']['id'];
-                if (!isset($test['Test']['started'])) {
-                    $this->Test->save(array('id' => $testId, 'Test.started' => date('Y-m-d H:i:s')));
-                }
-            } else {
+            if (!$test) {                
                 $this->Session->setFlash('Test code is invalid.');
                 $this->redirect(array('action' => 'take_test'));
             }
@@ -519,6 +523,156 @@ class TestsController extends AppController
     {
         $this->set('score', $this->Test->getTestScore($id));
     }//end view_score()
+
+
+    /**
+     * This action method is used to display paginated list of tests.
+     *
+     * @return void
+     */
+    public function student_index($subjectId = null)
+    {   
+        if (empty($subjectId)) {
+            throw new NotFoundException(__('Invalid subject'));
+        }
+        $this->Test->recursive = 0;
+        $this->paginate = array('conditions' => array('Test.subject_id' => $subjectId));
+        $tests = $this->paginate();
+        $this->set(compact('tests'));
+    }//end index()
+
+
+    /**
+     * This action method is used to display details of selected test.
+     *
+     * @param integer $id test id
+     *
+     * @return void
+     */
+    public function student_test($id = null)
+    {
+        $this->Test->id = $id;
+
+        // If test does not exists, throws na exception.
+        if (!$this->Test->exists()) {
+            throw new NotFoundException(__('Invalid test'));
+        }
+
+        if ($this->request->is('post')) {
+            //debug($this->request->data);
+            
+            
+            if (!empty($this->request->data['btnNext'])
+                && $this->Session->read('Test.current_question') <
+                        $this->Session->read('Test.question_count') - 1) {                
+                $this->Session->write(
+                    'Test.current_question', 
+                    $this->Session->read('Test.current_question') + 1
+                );
+                $this->userTestAttemp($id);
+            }
+            if (!empty($this->request->data['btnPrev'])
+                && $this->Session->read('Test.current_question') > 0) {
+                $this->Session->write(
+                    'Test.current_question', 
+                    $this->Session->read('Test.current_question') - 1
+                );
+                $this->userTestAttemp($id);
+            }
+            if (!empty($this->request->data['submit'])) {
+                $option = array(
+                    'conditions' => array(
+                        'user_id' => $this->Auth->user('id'),
+                        'test_id' => $id,
+                    )
+                );
+                $result = ClassRegistry::init('tests_users')->find('all', $option);
+                $score = 0;
+                foreach($result as $row) {
+                    $params = array('id' => $row['tests_users']['question_id']);
+                    $correctAnswer = $this->Question->field('answer', $params);
+                    if($row['tests_users']['answer'] == $correctAnswer) {
+                        $score++;
+                    }
+                }
+                $data = array(
+                    'user_id' => $this->Auth->user('id'), 
+                    'test_id' => $id, 
+                    'score' => $score
+                );
+                if($this->Result->save($data)) {
+                    $this->redirect(array('action' => 'result', $id));
+                }
+                
+            }                           
+        } else {
+            $test = $this->Test->find(
+                'first',
+                array(
+                 'conditions' => array('Test.id' => $id),
+                )
+            );            
+            $test['question_count'] = count($test['TestQuestion']);
+            $test['current_question'] = 0;
+            $this->Session->write('Test', $test);
+        }
+        
+        $test            = $this->Session->read('Test');
+        $currentQuestion = $test['TestQuestion'][$test['current_question']]['question_id'];
+        unset($test['TestQuestion']);
+        $question = $this->Question->read(null, $currentQuestion);
+        $this->request->data = '';
+        $option = array(
+            'conditions' => array(
+                'user_id' => $this->Auth->user('id'), 
+                'test_id' => $id, 
+                'question_id' => $question['Question']['id']
+            )
+        );
+        $result = ClassRegistry::init('tests_users')->find('first', $option);
+        $this->request->data['Option'] = unserialize($result['tests_users']['answer']);
+        //debug($test); 
+        $this->set(compact('test', 'question'));
+    }//end view()
+
+
+    protected function userTestAttemp($testId = null) {
+        $testUserObj = ClassRegistry::init('tests_users');
+        $data['answer'] = serialize($this->request->data['Option']);
+        $data['user_id'] = $this->Auth->user('id');
+        $data['test_id'] = $testId;
+        $data['question_id'] = $this->request->data['TestUser']['question_id'];
+        $option = array(
+            'user_id' => $data['user_id'], 
+            'test_id' => $data['test_id'], 
+            'question_id' => $data['question_id']
+        );
+        $testUserObj->id = $testUserObj->field('id', $option);
+        //$testUserObj->create();
+        if(ClassRegistry::init('tests_users')->save($data)) {
+            return true;
+        }
+    } 
+
+
+
+    /**
+     * This action method is used to display paginated list of tests.
+     *
+     * @return void
+     */
+    public function student_result($testId = null)
+    {   
+        $option = array(
+            'conditions' => array(
+                'user_id' => $this->Auth->user('id'),
+                'test_id' => $testId
+            ),
+            'contain' => array('Test', 'User')
+        );
+        $results = $this->Result->find('first', $option);
+        $this->set(compact('results'));
+    }//end index()
 
 
 }//end class

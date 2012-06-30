@@ -8,7 +8,7 @@ class SubjectsController extends AppController
      *
      * @return void
      */
-    public function index()
+    public function admin_index()
     {
         $this->Subject->recursive = 0;
         $this->set('subjects', $this->paginate());
@@ -22,7 +22,7 @@ class SubjectsController extends AppController
      *
      * @return void
      */
-    public function view($id = null)
+    public function admin_view($id = null)
     {
         $this->Subject->id = $id;
 
@@ -32,7 +32,7 @@ class SubjectsController extends AppController
         }
 
         $this->set('subject', $this->Subject->read(null, $id));
-    }//end view()
+    }//end admin_view()
 
 
     /**
@@ -40,7 +40,7 @@ class SubjectsController extends AppController
      *
      * @return void
      */
-    public function add()
+    public function admin_add($courseId = null)
     {
         // Adds subject only if form is submitted.
         if ($this->request->is('post')) {
@@ -49,15 +49,42 @@ class SubjectsController extends AppController
             // Saves subject.
             if ($this->Subject->save($this->request->data)) {
                 $this->Session->setFlash(
-                    __('The subject has been saved'),
-                    'default',
-                    array('class' => 'success')
-                );
+                    __('The subject has been saved'),  'success');
                 $this->redirect(array('action' => 'index'));
             } else {
-                $this->Session->setFlash(__('The subject could not be saved. Please, try again.'));
+                $this->Session->setFlash(__('The subject could not be saved. Please, try again.'), 'error');
             }
+        }    
+
+        $courses = $this->Subject->Course->find('list', array(
+            'fields' => array('Course.id', 'Course.name', 'Board.name'),
+            "joins" => array(
+                array(
+                    "table" => "boards",
+                    "alias" => "Board",
+                    "type" => "INNER",
+                    "conditions" => array("Board.id = Course.board_id")
+                    )
+                )
+            )
+        );
+       /*
+        $courses = $this->Subject->Course->find(
+            'all',
+            array(
+                'fields' => array('Course.id', 'Course.name'),
+                'contain' => array('Board.name'),
+                'group' => 'Board.name'
+            )
+        );
+        $courseList = array();
+        foreach ($courses as $course){
+            $courseList[$course['Board']['name']] = array($course['Course']['id'] => $course['Course']['name']);
         }
+        $courses = $courseList;
+        */
+      
+       $this->set(compact('courseId', 'courses'));
     }//end add()
 
 
@@ -68,7 +95,7 @@ class SubjectsController extends AppController
      *
      * @return void
      */
-    public function edit($id = null)
+    public function admin_edit($id = null)
     {
         $this->Subject->id = $id;
 
@@ -82,16 +109,16 @@ class SubjectsController extends AppController
             if ($this->Subject->save($this->request->data)) {
                 $this->Session->setFlash(
                     __('The subject has been saved'),
-                    'default',
-                    array('class' => 'success')
+                    'success'
                 );
                 $this->redirect(array('action' => 'index'));
             } else {
-                $this->Session->setFlash(__('The subject could not be saved. Please, try again.'));
+                $this->Session->setFlash(__('The subject could not be saved. Please, try again.'),'error');
             }
         } else {
             $this->request->data = $this->Subject->read(null, $id);
         }
+        $this->set('courses', $this->Subject->Course->find('list'));
     }//end edit()
 
 
@@ -102,7 +129,7 @@ class SubjectsController extends AppController
      *
      * @return void
      */
-    public function delete($id = null)
+    public function admin_delete($id = null)
     {
         // If this action method was not called with POST method, throws an exception.
         if (!$this->request->is('post')) {
