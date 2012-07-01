@@ -675,4 +675,10 @@ class TestsController extends AppController
     }//end index()
 
 
+    function student_quiz() {
+        $id = $this->Test->field('id', array('name' => 'quiz'));
+        $this->setAction('student_test', $id);
+    }
+
+
 }//end class
