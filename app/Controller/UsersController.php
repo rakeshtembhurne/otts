@@ -120,7 +120,7 @@ class UsersController extends AppController
           'viewVars'    => null,
         );
 
-       $this->_sendEmail($options);
+        //$this->_sendEmail($options);
 
         $this->request->data['User']['group_id'] = Configure::read('studentGroupId');
         if($this->User->save($this->request->data)) {
