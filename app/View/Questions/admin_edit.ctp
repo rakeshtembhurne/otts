@@ -1,4 +1,4 @@
-<div class="questions form">
+<div id="questionEdit" class="questions form">
 <?php echo $this->Form->create('Question', array_merge($twitterBootstrapCreateOptions, array('type' => 'file')));?>
 		<h2><?php echo __('Edit Question'); ?></h2>
     <?php
