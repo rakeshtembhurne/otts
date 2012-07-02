@@ -615,12 +615,14 @@ class TestsController extends AppController
             $test['question_count'] = count($test['TestQuestion']);
             $test['current_question'] = 0;
             $this->Session->write('Test', $test);
+            
         }
         
         $test            = $this->Session->read('Test');
         $currentQuestion = $test['TestQuestion'][$test['current_question']]['question_id'];
         unset($test['TestQuestion']);
         $question = $this->Question->read(null, $currentQuestion);
+        
         $this->request->data = '';
         $option = array(
             'conditions' => array(
@@ -630,6 +632,7 @@ class TestsController extends AppController
             )
         );
         $result = ClassRegistry::init('tests_users')->find('first', $option);
+        
         $this->request->data['Option'] = unserialize($result['tests_users']['answer']);
         //debug($test); 
         $this->set(compact('test', 'question'));

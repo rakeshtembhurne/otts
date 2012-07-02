@@ -1,7 +1,11 @@
-<div class="tests view">
+<div id="questionEdit" class="tests view">
     <h2><?php  echo __('Test');?></h2>
     <p><strong>Question <?php echo $this->Session->read('Test.current_question') + 1;?>: </strong><?php echo __($question['Question']['title']); ?></p>
-    <?php //debug($this->request->data);  //debug($question); ?>
+    <?php foreach ($question['Image'] as $image) {
+        if ($image['image_of'] == 'question') {
+            echo $this->Html->image(DS.'files'.DS.'images'.DS.$image['filename'], array('class' => 'thumbnail'));
+        } 
+    } ?>
     <?php echo $this->Form->create('TestUser'); ?>
     <?php for ($i=1; $i <= 4; $i++) { ?>
         <p>
@@ -9,6 +13,11 @@
             echo $this->Form->input('question_id', array('type' => 'hidden', 'value' => $question['Question']['id']));
             echo $i. ' ';
             echo $this->Form->input('Option.'.$i, array('type' => 'checkbox', 'div' => false, 'label' => array('div' => false, 'text' => $question['Question']['option_'.$i]))); 
+            foreach ($question['Image'] as $image) {
+                if ($image['image_of'] == 'option_'.$i) {
+                    echo $this->Html->image(DS.'files'.DS.'images'.DS.$image['filename'], array('class' => 'thumbnail'));
+                } 
+            } 
                 //echo __($i .') '. $question['Question']['option_'.$i]);                 
             ?>
         </p>
