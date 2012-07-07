@@ -10,22 +10,22 @@ class BoardsController extends AppController {
 	public $uses = array('Board', 'User');
 
 
-/**
- * index method
- *
- * @return void
- */
+	/**
+	 * index method
+	 *
+	 * @return void
+	 */
 	public function index() {
 		$this->Board->recursive = 0;
 		$this->set('boards', $this->paginate());
 	}
 
-/**
- * view method
- *
- * @param string $id
- * @return void
- */
+	/**
+	 * view method
+	 *
+	 * @param string $id
+	 * @return void
+	 */
 	public function admin_view($id = null) {
 		$this->Board->id = $id;
 		if (!$this->Board->exists()) {
@@ -34,11 +34,11 @@ class BoardsController extends AppController {
 		$this->set('board', $this->Board->read(null, $id));
 	}
 
-/**
- * add method
- *
- * @return void
- */
+	/**
+	 * add method
+	 *
+	 * @return void
+	 */
 	public function add() {
 		if ($this->request->is('post')) {
 			$this->Board->create();
@@ -51,12 +51,12 @@ class BoardsController extends AppController {
 		}
 	}
 
-/**
- * edit method
- *
- * @param string $id
- * @return void
- */
+	/**
+	 * edit method
+	 *
+	 * @param string $id
+	 * @return void
+	 */
 	public function edit($id = null) {
 		$this->Board->id = $id;
 		if (!$this->Board->exists()) {
@@ -74,12 +74,12 @@ class BoardsController extends AppController {
 		}
 	}
 
-/**
- * delete method
- *
- * @param string $id
- * @return void
- */
+	/**
+	 * delete method
+	 *
+	 * @param string $id
+	 * @return void
+	 */
 	public function delete($id = null) {
 		if (!$this->request->is('post')) {
 			throw new MethodNotAllowedException();
@@ -106,11 +106,11 @@ class BoardsController extends AppController {
 	}
 
 
-/**
- * admin_add method
- *
- * @return void
- */
+	/**
+	 * admin_add method
+	 *
+	 * @return void
+	 */
 	public function admin_add() {		
 		if ($this->request->is('post')) {
 			$this->Board->create();
@@ -123,12 +123,12 @@ class BoardsController extends AppController {
 		}
 	}
 
-/**
- * admin_edit method
- *
- * @param string $id
- * @return void
- */
+	/**
+	 * admin_edit method
+	 *
+	 * @param string $id
+	 * @return void
+	 */
 	public function admin_edit($id = null) {
 		$this->Board->id = $id;
 		if (!$this->Board->exists()) {
@@ -146,12 +146,12 @@ class BoardsController extends AppController {
 		}
 	}
 
-/**
- * admin_delete method
- *
- * @param string $id
- * @return void
- */
+	/**
+	 * admin_delete method
+	 *
+	 * @param string $id
+	 * @return void
+	 */
 	public function admin_delete($id = null) {
 		if (!$this->request->is('post')) {
 			throw new MethodNotAllowedException();
