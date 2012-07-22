@@ -2,14 +2,14 @@
 	<h2><?php echo __('Subjects');?></h2>
 	<table class="table table-condensed table-striped table-bordered">
 	<tr>			
-			<th><?php echo $this->Paginator->sort('course');?></th>
+			
 			<th><?php echo $this->Paginator->sort('name');?></th>
 			<th class="actions"><?php echo __('Actions');?></th>
 	</tr>
 	<?php
 	foreach ($subjects as $subject): ?>
 	<tr>		
-		<td><?php echo h($subject['Course']['name']); ?>&nbsp;</td>
+		
 		<td><?php echo h($subject['Subject']['name']); ?>&nbsp;</td>		
 		<td class="actions">			
 			<?php echo $this->Html->link(__('View'), array('action' => 'view', $subject['Subject']['id'], 'admin' => true), array('class' => 'btn btn-info btn-mini')); ?>

@@ -146,7 +146,13 @@ class UsersController extends AppController
     }//end signup()
 
 
-    function student_home() {        
+    function student_home() {    
+        $testModel = ClassRegistry::init('Test');
+        //$tests = $testModel->find('all');
+
+        $tests = $this->paginate($testModel);
+        //debug($tests);
+        $this->set('tests', $tests);
         $this->set('user', $this->User->read(null, $this->Session->read('Auth.User.id')));
     }
 

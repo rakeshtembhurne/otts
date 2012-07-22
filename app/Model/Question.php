@@ -21,7 +21,7 @@ class Question extends AppModel
      *
      * @var array
      */
-    public $belongsTo = array('Subject');
+    public $belongsTo = array('Topic');
 
     public $hasMany = array('Image');
 
@@ -50,6 +50,8 @@ class Question extends AppModel
     function beforeSave() {
         //debug($this->data);
         //exit;
+        $subjectId = $this->Topic->field('subject_id', array('Topic.id' => $this->data['Question']['topic_id']));
+        $this->data['Question']['subject_id'] = $subjectId;
         return true;
     }
 }//end class

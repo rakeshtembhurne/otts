@@ -5,7 +5,7 @@
 			<table class="table table-striped table-condensed table-bordered">
 				<tr>
 						<th><?php echo $this->Paginator->sort('id');?></th>
-						<th><?php echo $this->Paginator->sort('subject_id');?></th>
+						<th><?php echo $this->Paginator->sort('topic_id');?></th>
 						<th><?php echo $this->Paginator->sort('title');?></th>			
 						<th><?php echo $this->Paginator->sort('answer');?></th>
 						<th class="actions"><?php echo __('Actions');?></th>
@@ -15,7 +15,7 @@
 				<tr>
 					<td><?php echo h($question['Question']['id']); ?>&nbsp;</td>
 					<td>
-						<?php echo $this->Html->link($question['Subject']['name'], array('controller' => 'subjects', 'action' => 'view', $question['Subject']['id'])); ?>
+						<?php echo $this->Html->link($question['Topic']['name'], array('controller' => 'topics', 'action' => 'view', $question['Topic']['id'])); ?>
 					</td>
 					<td>
 						<strong><?php echo h($question['Question']['title']); ?></strong><br />
@@ -49,7 +49,7 @@
 				<?php echo $this->element('paging'); ?>
 		</div>
 		<div class="span2">
-			<h3>Select Subject</h3>
+			<h3>Select Topic</h3>
 			<ul class="">
 				<li><?php 
 					echo $this->Html->link(
@@ -57,11 +57,11 @@
 						array('action' => 'index')
 					);
 				?></li>
-				<?php foreach ($subjects as $subjectId => $subjectName) : ?>
+				<?php foreach ($topics as $topicId => $topicName) : ?>
 					<li><?php 
 						echo $this->Html->link(
-							$subjectName,
-							array('action' => 'index', $subjectId)
+							$topicName,
+							array('action' => 'index', $topicId)
 						);
 					?></li>
 				<?php endforeach; ?>

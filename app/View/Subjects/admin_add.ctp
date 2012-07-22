@@ -3,11 +3,7 @@
 	
 		<h2><?php echo __('Add Subject'); ?></h2>
 	<?php	
-	    echo $this->Form->input('course_id', array(
-	    	'empty' => '--Select--', 	    	 
-	    	'selected' => $courseId
-	    	)
-	    );
+	    
 		echo $this->Form->input('name');
 	?>
 

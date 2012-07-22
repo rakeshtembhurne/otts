@@ -8,15 +8,15 @@ class QuestionsController extends AppController
      *
      * @return void
      */
-    public function admin_index($subjectId = null)
+    public function admin_index($topicId = null)
     {
         $this->Question->recursive = 0;
-        if (!empty($subjectId)) {
-            $this->paginate = array('conditions' => array('subject_id' => $subjectId));    
+        if (!empty($topicId)) {
+            $this->paginate = array('conditions' => array('topic_id' => $topicId));    
         }      
 
         $this->set('questions', $this->paginate());
-        $this->set('subjects', $this->Question->Subject->find('list'));
+        $this->set('topics', $this->Question->Topic->find('list'));
     }//end index()
 
 
@@ -47,37 +47,33 @@ class QuestionsController extends AppController
      */
     public function admin_add()
     {
-        if ($this->request->is('post')) {
+        if ($this->request->is('post')) {       
             $this->Question->create();
+
+            //debug($this->request->data);exit;
             if ($this->Question->save($this->request->data)) {
                 $this->Session->setFlash(__('The question has been saved'), 'success');
-                $this->redirect(array('action' => 'edit', $this->Question->id));
+                $this->redirect(array('action' => 'index'));
             } else {
                 $this->Session->setFlash(__('The question could not be saved. Please, try again.'), 'error');
             }
         }        
 
-      
-        $subjects = $this->Question->Subject->find(
+        $contain = array('Subject.name');
+
+        $topics = $this->Question->Topic->find(
             'all',
-            array(
-                //'fields' => array('id', 'name'),
-                'contain' => array(
-                    'Course' => array(
-                        'fields' => array('name'),
-                        'Board' => array('fields' => array('name'))
-                    )
-                ),
-                'group' => 'Course.name',                
-            )
-        );       
-        $subjectList = array();
-        foreach ($subjects as $subject){
-            $subjectList[$subject['Course']['Board']['name'].' : '.$subject['Course']['name']] = array($subject['Subject']['id'] => $subject['Subject']['name']);
+            compact('contain')
+        );
+
+        $topicsList = array();
+        foreach ($topics as $topic){
+            $topicsList[$topic['Subject']['name']][$topic['Topic']['id']] = $topic['Topic']['name'];
         }
 
-        $subjects = $subjectList;      
-        $this->set(compact('subjects'));
+        $topics = $topicsList;      
+        //debug($topicsList);
+        $this->set(compact('topics'));
     }//end add()
 
 
@@ -101,26 +97,33 @@ class QuestionsController extends AppController
         if ($this->request->is('post') || $this->request->is('put')) {            
             
             if ($this->Question->save($this->request->data)) {
-                $this->Question->Image->Behaviors->attach(
-                    'ImageUpload',
-                    array(
-                        'fileField' => 'filename',
-                        'dirFormat' => 'images'
-                    )
-                );
-                $this->request->data['Image'] = array_merge(
-                    $this->request->data['Image'],
-                    array('question_id' => $this->Question->id)
-                );                
-                if ($this->Question->Image->save($this->request->data)) {
-                    //debug($this->request->data);exit;
-                    $this->Session->setFlash(
-                        __('The question has been saved'),
-                        'success'                    
+                if (!empty($_FILES)) {
+                    $this->Question->Image->Behaviors->attach(
+                        'ImageUpload',
+                        array(
+                            'fileField' => 'filename',
+                            'dirFormat' => 'images'
+                        )
                     );
+                    $this->request->data['Image'] = array_merge(
+                        $this->request->data['Image'],
+                        array('question_id' => $this->Question->id)
+                    );                
+                    if ($this->Question->Image->save($this->request->data)) {
+                        //debug($this->request->data);exit;
+                        $this->Session->setFlash(
+                            __('The question has been saved'),
+                            'success'                    
+                        );
+                    } else {
+                        $this->Question->delete();
+                        $this->Session->setFlash(__('The question image could not be saved. Please, try again.'), 'error');
+                    }
                 } else {
-                    $this->Question->delete();
-                    $this->Session->setFlash(__('The question image could not be saved. Please, try again.'), 'error');
+                    $this->Session->setFlash(
+                            __('The question has been saved'),
+                            'success'                    
+                        );
                 }
                 
                 $this->redirect(array('action' => 'index'));
@@ -132,7 +135,20 @@ class QuestionsController extends AppController
             $this->request->data['Question']['answer'] = unserialize($this->request->data['Question']['answer']);
         }
 
-        $subjects    = $this->Question->Subject->find('list');
+        $contain = array('Subject.name');
+
+        $topics = $this->Question->Topic->find(
+            'all',
+            compact('contain')
+        );
+
+        $topicsList = array();
+        foreach ($topics as $topic){
+            $topicsList[$topic['Subject']['name']][$topic['Topic']['id']] = $topic['Topic']['name'];
+        }
+
+        $topics = $topicsList;      
+       
         $images      = $this->Question->Image->find(
             'all', 
             array(
@@ -142,7 +158,7 @@ class QuestionsController extends AppController
         );        
 //debug($images);
         $question_id = $id;
-        $this->set(compact('subjects', 'question_id', 'images'));
+        $this->set(compact('topics', 'question_id', 'images'));
     }//end edit()
 
 

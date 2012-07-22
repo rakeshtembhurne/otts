@@ -3,7 +3,7 @@
 		<h2><?php echo __('Edit Question'); ?></h2>
     <?php
     echo $this->Form->input('id', array('type' => 'hidden'));
-		echo $this->Form->input('subject_id', array('empty' => true));
+		echo $this->Form->input('topic_id', array('empty' => true));
 		echo $this->Form->input(
         'title',
          array(

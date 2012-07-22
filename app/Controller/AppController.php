@@ -29,7 +29,7 @@ class AppController extends Controller
   protected function getRedirectPath() {
     if ($this->Session->read('Auth.User.userGroup') == 'Admin') {
       $this->Auth->loginRedirect = array(
-        'controller' => 'boards',
+        'controller' => 'subjects',
         'action'     => 'index',
         'admin'      => true,
         'plugin'     => false

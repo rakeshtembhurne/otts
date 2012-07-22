@@ -56,35 +56,8 @@ class SubjectsController extends AppController
             }
         }    
 
-        $courses = $this->Subject->Course->find('list', array(
-            'fields' => array('Course.id', 'Course.name', 'Board.name'),
-            "joins" => array(
-                array(
-                    "table" => "boards",
-                    "alias" => "Board",
-                    "type" => "INNER",
-                    "conditions" => array("Board.id = Course.board_id")
-                    )
-                )
-            )
-        );
-       /*
-        $courses = $this->Subject->Course->find(
-            'all',
-            array(
-                'fields' => array('Course.id', 'Course.name'),
-                'contain' => array('Board.name'),
-                'group' => 'Board.name'
-            )
-        );
-        $courseList = array();
-        foreach ($courses as $course){
-            $courseList[$course['Board']['name']] = array($course['Course']['id'] => $course['Course']['name']);
-        }
-        $courses = $courseList;
-        */
-      
-       $this->set(compact('courseId', 'courses'));
+        
+       
     }//end add()
 
 
@@ -118,7 +91,7 @@ class SubjectsController extends AppController
         } else {
             $this->request->data = $this->Subject->read(null, $id);
         }
-        $this->set('courses', $this->Subject->Course->find('list'));
+        
     }//end edit()
 
 
@@ -144,12 +117,12 @@ class SubjectsController extends AppController
 
         // Deletes the subject.
         if ($this->Subject->delete()) {
-            $this->Session->setFlash(__('Subject deleted'), 'default', array('class' => 'success'));
+            $this->Session->setFlash(__('Subject deleted'), 'success');
             $this->redirect(array('action' => 'index'));
         }
 
         // If subject was not deleted, sets error message and redirects.
-        $this->Session->setFlash(__('Subject was not deleted'));
+        $this->Session->setFlash(__('Subject was not deleted'), 'error');
         $this->redirect(array('action' => 'index'));
     }//end delete()
 

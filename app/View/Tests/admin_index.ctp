@@ -1,4 +1,4 @@
-<div class="tests index"><?php //debug($tests); ?>
+<div class="tests index">
 	<h2><?php echo __('Tests');?></h2>
 	<table class="table table-striped table-condensed table-bordered">
 	<tr>
@@ -16,8 +16,7 @@
 		<td><?php echo !empty($test['Test']['name']) ? $test['Test']['name'] : 'No Name';  ?>&nbsp;</td>
 		<td><?php echo h($test['Test']['code']); ?>&nbsp;</td>
 		<td class="actions">
-			<?php echo $this->Html->link(__('View'), array('action' => 'view', $test['Test']['id'], 'admin' => false)); ?>
-			<?php echo $this->Html->link(__('Edit'), array('action' => 'edit', $test['Test']['id'])); ?>
+			<?php echo $this->Html->link(__('View'), array('action' => 'view', $test['Test']['id'], 'admin' => false)); ?>			
 			<?php echo $this->Form->postLink(__('Delete'), array('action' => 'delete', $test['Test']['id']), null, __('Are you sure you want to delete # %s?', $test['Test']['id'])); ?>
 		</td>
 	</tr>

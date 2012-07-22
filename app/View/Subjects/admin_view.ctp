@@ -11,11 +11,8 @@
             <?php echo h($subject['Subject']['name']); ?>
             &nbsp;
         </dd>
-        <dt class="span3"><?php echo __('Name'); ?></dt>
-        <dd>
-            <?php echo h($subject['Course']['name']); ?>
-            &nbsp;
-        </dd>
+        
+        
         <dt class="span3"><?php echo __('Created'); ?></dt>
         <dd>
             <?php echo h($subject['Subject']['created']); ?>

@@ -6,9 +6,9 @@
 			<?php echo h($question['Question']['id']); ?>
 			&nbsp;
 		</dd>
-		<dt class="span3"><?php echo __('Subject'); ?></dt>
+		<dt class="span3"><?php echo __('Topic'); ?></dt>
 		<dd>
-			<?php echo $this->Html->link($question['Subject']['name'], array('controller' => 'subjects', 'action' => 'view', $question['Subject']['id'])); ?>
+			<?php echo $this->Html->link($question['Topic']['name'], array('controller' => 'topics', 'action' => 'view', $question['Topic']['id'])); ?>
 			&nbsp;
 		</dd>
 		<dt class="span3"><?php echo __('Title'); ?></dt>
